@@ -65,6 +65,24 @@ public class ProfileHandler : IProfileHandler
         }
     }
 
+    public static async Task<IResult> GetJavaVersions(IGmlManager gmlManager)
+    {
+        try
+        {
+            var versions = await gmlManager.System.GetJavaVersions();
+
+            return Results.Ok(ResponseMessage.Create(versions.OrderByDescending(c => c.MajorVersion), "Доступные версии Minecraft", HttpStatusCode.OK));
+        }
+        catch (VersionNotLoadedException versionNotLoadedException)
+        {
+            return Results.NotFound(ResponseMessage.Create(versionNotLoadedException.InnerExceptionMessage, HttpStatusCode.NotFound));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 
     [Authorize]
     public static async Task<IResult> CreateProfile(
@@ -126,7 +144,6 @@ public class ProfileHandler : IProfileHandler
                 HttpStatusCode.BadRequest));
         }
     }
-
 
     [Authorize]
     public static async Task<IResult> UpdateProfile(
@@ -210,7 +227,7 @@ public class ProfileHandler : IProfileHandler
         if (profile is null)
             return Results.NotFound(ResponseMessage.Create("Профиль не найден", HttpStatusCode.NotFound));
 
-        await gmlManager.Profiles.RestoreProfileInfo(profile.Name);
+        await gmlManager.Profiles.RestoreProfileInfo(profile.Name, restoreDto.BootstrapProgram);
 
         return Results.Ok(ResponseMessage.Create("Профиль успешно восстановлен", HttpStatusCode.OK));
     }

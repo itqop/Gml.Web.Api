@@ -1,8 +1,10 @@
 using System.ComponentModel;
 using Gml.Core.Launcher;
 using Gml.Core.User;
+using Gml.Models.Bootstrap;
 using Gml.Web.Api.Domains.System;
 using GmlCore.Interfaces;
+using GmlCore.Interfaces.Bootstrap;
 using GmlCore.Interfaces.Enums;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.SignalR;
@@ -36,8 +38,7 @@ public class ProfileHub : BaseHub
 
             if (profile.State == ProfileState.Loading)
             {
-                SendCallerMessage(
-                    "В данный момент уже происходит загрузка выбранного профиля!");
+                SendCallerMessage("В данный момент уже происходит загрузка выбранного профиля!");
                 return;
             }
 
@@ -76,7 +77,17 @@ public class ProfileHub : BaseHub
         }
     }
 
+    public async Task RestoreWithCustomJava(string profileName, JavaBootstrapProgram bootstrapProgram)
+    {
+        await RestoreAndChangeBootstrapVersion(profileName, bootstrapProgram);
+    }
+
     public async Task Restore(string profileName)
+    {
+        await RestoreAndChangeBootstrapVersion(profileName, null);
+    }
+
+    public async Task RestoreAndChangeBootstrapVersion(string profileName, JavaBootstrapProgram bootstrapProgram)
     {
         try
         {
@@ -90,8 +101,7 @@ public class ProfileHub : BaseHub
 
             if (profile.State == ProfileState.Loading)
             {
-                SendCallerMessage(
-                    "В данный момент уже происходит загрузка выбранного профиля!");
+                SendCallerMessage("В данный момент уже происходит загрузка выбранного профиля!");
                 return;
             }
 
@@ -105,17 +115,14 @@ public class ProfileHub : BaseHub
                 SendProgress("ChangeProgress", profile.Name, percentage);
             });
 
-            var logInfo = profile.GameLoader.LoadLog.Subscribe(logs =>
-            {
-                Log(logs, profile.Name);
-            });
+            var logInfo = profile.GameLoader.LoadLog.Subscribe(logs => { Log(logs, profile.Name); });
 
             var exception = profile.GameLoader.LoadException.Subscribe(async logs =>
             {
                 await Clients.All.SendAsync("OnException", profile.Name, logs.ToString());
             });
 
-            await _gmlManager.Profiles.RestoreProfileInfo(profile.Name);
+            await _gmlManager.Profiles.RestoreProfileInfo(profile.Name, bootstrapProgram);
 
             await Clients.All.SendAsync("SuccessInstalled", profile.Name);
 
@@ -164,7 +171,8 @@ public class ProfileHub : BaseHub
     {
         public void Configure(JsonOptions options)
         {
-            options.SerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals;
+            options.SerializerOptions.NumberHandling =
+                System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals;
         }
     }
 }

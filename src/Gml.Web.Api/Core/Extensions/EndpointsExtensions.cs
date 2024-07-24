@@ -11,6 +11,7 @@ using Gml.Web.Api.Dto.Profile;
 using Gml.Web.Api.Dto.Servers;
 using Gml.Web.Api.Dto.Settings;
 using Gml.Web.Api.Dto.User;
+using GmlCore.Interfaces.Bootstrap;
 using GmlCore.Interfaces.Notifications;
 
 namespace Gml.Web.Api.Core.Extensions;
@@ -400,6 +401,19 @@ public static class EndpointsExtensions
             .Produces<ResponseMessage>((int)HttpStatusCode.BadRequest)
             .RequireAuthorization();
 
+        app.MapGet("/api/v1/profiles/versions/java", ProfileHandler.GetJavaVersions)
+            .WithOpenApi(generatedOperation =>
+            {
+                generatedOperation.Summary = "Получение списка версий Java";
+                return generatedOperation;
+            })
+            .WithDescription("Получение списка версий Java")
+            .WithName("Java versions")
+            .WithTags("Profiles")
+            .Produces<ResponseMessage<List<IBootstrapProgram>>>()
+            .Produces<ResponseMessage>((int)HttpStatusCode.BadRequest)
+            .RequireAuthorization();
+
         app.MapPost("/api/v1/profiles", ProfileHandler.CreateProfile)
             .WithOpenApi(generatedOperation =>
             {
@@ -676,7 +690,7 @@ public static class EndpointsExtensions
 
         #endregion
 
-        #region Servers
+        #region Notifications
 
         app.MapGet("/api/v1/notifications", NotificationHandler.GetNotifications)
             .WithOpenApi(generatedOperation =>
