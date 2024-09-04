@@ -181,9 +181,14 @@ public class MinecraftHandler : IMinecraftHandler
         return Results.Ok(profile);
     }
 
-    public static Task<IResult> GetPlayersUuids(ISystemService systemService)
+    public static async Task<IResult> GetPlayersUuids(IGmlManager gmlManager, ISystemService systemService, string[] payload)
     {
-        return Task.FromResult(Results.Ok());
+        var users = payload.Select(username => gmlManager.Users.GetUserByName(username).Result).ToList();
+
+        return Results.Ok(users.Select(user => new PlayersUuids {
+            Id = user.Uuid.Replace("-", ""),
+            Name = user.Name
+        }));
     }
 
     public static Task<IResult> GetPlayerAttribute(ISystemService systemService)
