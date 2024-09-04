@@ -185,6 +185,8 @@ public class MinecraftHandler : IMinecraftHandler
     {
         var users = payload.Select(username => gmlManager.Users.GetUserByName(username).Result).ToList();
 
+        if (users.FirstOrDefault() is null) return Results.BadRequest();
+
         return Results.Ok(users.Select(user => new PlayersUuids {
             Id = user.Uuid.Replace("-", ""),
             Name = user.Name

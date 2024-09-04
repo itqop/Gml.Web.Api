@@ -280,7 +280,7 @@ public static class EndpointsExtensions
             .WithTags("Integration/Minecraft/AuthLib")
             .Produces<ResponseMessage>((int)HttpStatusCode.BadRequest);
 
-        app.MapPost("/api/v1/integrations/authlib/api/minecraft/profiles/minecraft", MinecraftHandler.GetPlayersUuids)
+        app.MapPost("/api/v1/integrations/authlib/minecraft/api/profiles/minecraft", MinecraftHandler.GetPlayersUuids)
             .WithOpenApi(generatedOperation =>
             {
                 generatedOperation.Summary = "Реализация Uuid профилей";
@@ -291,7 +291,7 @@ public static class EndpointsExtensions
             .WithTags("Integration/Minecraft/AuthLib")
             .Produces<ResponseMessage>((int)HttpStatusCode.BadRequest);
 
-        app.MapGet("/api/v1/integrations/authlib/api/minecraft/player/attributes", MinecraftHandler.GetPlayerAttribute)
+        app.MapGet("/api/v1/integrations/authlib/minecraft/api/player/attributes", MinecraftHandler.GetPlayerAttribute)
             .WithOpenApi(generatedOperation =>
             {
                 generatedOperation.Summary = "Получение атрибутов пользователя";
