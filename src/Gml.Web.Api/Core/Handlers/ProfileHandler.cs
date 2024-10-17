@@ -271,8 +271,10 @@ public class ProfileHandler : IProfileHandler
         {
             return Results.StatusCode(StatusCodes.Status403Forbidden);
         }
-
+        
         var userToken = user.AccessToken;
+        Debug.WriteLine(userToken);
+        Debug.WriteLine(createInfoDto.UserAccessToken);
         if (createInfoDto.UserAccessToken != userToken)
             return Results.StatusCode(StatusCodes.Status403Forbidden);
 

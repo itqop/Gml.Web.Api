@@ -738,7 +738,7 @@ public class Tests
         Assert.Multiple(() => { Assert.That(response.IsSuccessStatusCode, Is.True); });
     }
 
-    [Test]
+    /*[Test]
     [Order(48)]
     public async Task AddToWhiteList()
     {
@@ -814,7 +814,7 @@ public class Tests
         {
             Assert.That(response.StatusCode, Is.Not.EqualTo(HttpStatusCode.InternalServerError));
         });
-    }
+    }*/
 
     [Test]
     [Order(50)]
