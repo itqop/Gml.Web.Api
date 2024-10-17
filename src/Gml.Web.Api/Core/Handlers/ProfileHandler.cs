@@ -272,6 +272,10 @@ public class ProfileHandler : IProfileHandler
             return Results.StatusCode(StatusCodes.Status403Forbidden);
         }
 
+        var userToken = user.AccessToken;
+        if (createInfoDto.UserAccessToken != userToken)
+            return Results.StatusCode(StatusCodes.Status403Forbidden);
+
         user.Manager = gmlManager;
 
         var profileInfo = await gmlManager.Profiles.GetProfileInfo(profile.Name, new StartupOptions
