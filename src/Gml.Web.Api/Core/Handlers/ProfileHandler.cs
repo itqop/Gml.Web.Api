@@ -274,12 +274,13 @@ public class ProfileHandler : IProfileHandler
         
         var userToken = user.AccessToken;
         
-        Debug.WriteLine(userToken);
-        Debug.WriteLine(createInfoDto.UserAccessToken);
-        Console.WriteLine(userToken);
-        Console.WriteLine(createInfoDto.UserAccessToken);
+        //Debug.WriteLine(userToken);
+        //Debug.WriteLine(createInfoDto.UserAccessToken);
+        //Console.WriteLine(userToken);
+        //Console.WriteLine(createInfoDto.UserAccessToken);
         if (createInfoDto.UserAccessToken != userToken)
-            return Results.Ok(ResponseMessage.Create(createInfoDto.UserAccessToken + " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+ userToken, string.Empty, HttpStatusCode.OK));
+            return Results.StatusCode(StatusCodes.Status403Forbidden);
+        //return Results.Ok(ResponseMessage.Create(createInfoDto.UserAccessToken + " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+ userToken, string.Empty, HttpStatusCode.OK));
 
         user.Manager = gmlManager;
 
